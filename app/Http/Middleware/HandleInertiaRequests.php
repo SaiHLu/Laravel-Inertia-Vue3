@@ -16,7 +16,7 @@ class HandleInertiaRequests extends Middleware
      */
     public function rootView(Request $request)
     {
-        if($request->is('admin', 'admin/*')) {
+        if ($request->is('admin', 'admin/*')) {
             return 'backend';
         }
 

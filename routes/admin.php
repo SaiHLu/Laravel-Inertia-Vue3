@@ -2,6 +2,6 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::get('/admin/{value}', function () {
-    return inertia('Welcome');
-});
+Route::get('/admin', function () {
+    return inertia('Backend/Dashboard');
+})->name('admin.dashboard');

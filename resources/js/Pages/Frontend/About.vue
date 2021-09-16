@@ -1,8 +1,8 @@
 <template>
-  <div>
-    <Link :href="route('frontend.welcome')">Frontend</Link>
-    <h1>Dashboard</h1>
-  </div>
+  <Link :href="route('frontend.welcome')">Welcome</Link>
+  <Link :href="route('admin.dashboard')">Dashboard</Link>
+
+  <h1>About</h1>
 </template>
 
 <script>
