@@ -13,6 +13,8 @@ const mix = require("laravel-mix");
 
 mix.js("resources/js/app.js", "public/js")
     .vue()
+    .alias({ "@": "resources/js/Pages" })
+    .sourceMaps()
     .postCss("resources/css/app.css", "public/css", [
         //
     ]);
