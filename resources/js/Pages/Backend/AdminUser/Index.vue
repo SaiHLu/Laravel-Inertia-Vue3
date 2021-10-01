@@ -1,6 +1,6 @@
 <template>
   <div class="w-100">
-    <Breadcrumb pageName="Admin Users" :breadcrumbs="breadcrumbs" />
+    <Breadcrumb pageName="Admin Users" :breadcrumbs="AdminUser.index" />
 
     <div class="d-flex justify-content-between mb-3">
       <SearchInput v-model="form.search" class="w-25" />
@@ -28,7 +28,7 @@
               <i class="far fa-edit"></i>
             </Link>
             <button
-              @click="confirmDelete(adminUser.id)"
+              @click="deleteAdminUser(adminUser.id)"
               type="button"
               class="btn btn-danger"
             >
@@ -54,6 +54,9 @@ import Breadcrumb from "@/Backend/Components/Breadcrumb.vue";
 import DataTable from "@/Backend/Components/DataTable.vue";
 import Pagination from "@/Backend/Components/Pagination.vue";
 import SearchInput from "@/Backend/Components/SearchInput.vue";
+import { useBreadcrumbs } from "@/Backend/Composables/useBreadcrumbs.js";
+import { confirmDelete } from "@/Backend/Composables/useConfirmAlert.js";
+import { toastMessage } from "@/Backend/Composables/useToastMessage.js";
 
 export default {
   layout: AuthLayout,
@@ -63,40 +66,8 @@ export default {
     status: Object,
   },
   components: { Link, Breadcrumb, DataTable, Pagination, SearchInput },
-  methods: {
-    confirmDelete(AdminUserId) {
-      this.$swal
-        .fire({
-          title: "Are you sure?",
-          text: "You won't be able to revert this!",
-          icon: "warning",
-          showCancelButton: true,
-          confirmButtonColor: "#3085d6",
-          cancelButtonColor: "#d33",
-          confirmButtonText: "Yes, delete it!",
-        })
-        .then((result) => {
-          if (result.isConfirmed) {
-            Inertia.delete(route("admin.users.destroy", AdminUserId), {
-              onSuccess: () => {
-                this.$swal.fire("Deleted!", this.status.success, "success");
-              },
-            });
-          }
-        });
-    },
-  },
   setup(props) {
-    const breadcrumbs = [
-      {
-        link: route("admin.dashboard"),
-        text: "Dashboard",
-      },
-      {
-        link: null,
-        text: "Admin Users",
-      },
-    ];
+    const { AdminUser } = useBreadcrumbs;
 
     const form = reactive({
       search: props.filters.search,
@@ -112,9 +83,22 @@ export default {
       { deep: true }
     );
 
+    const deleteAdminUser = (adminUserId) => {
+      confirmDelete().then((response) => {
+        if (response.isConfirmed) {
+          Inertia.delete(route("admin.adminusers.destroy", adminUserId), {
+            preserveState: true,
+            onSuccess: () => {
+              toastMessage("success", props.status.success, "top-right");
+            },
+          });
+        }
+      });
+    };
+
     const headerRows = ["ID", "Name", "Email", "Role", "Created On", "Actions"];
 
-    return { breadcrumbs, headerRows, form };
+    return { AdminUser, headerRows, form, deleteAdminUser };
   },
 };
 </script>

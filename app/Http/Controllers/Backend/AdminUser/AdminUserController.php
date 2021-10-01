@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Backend\AdminUser;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AdminUser\AdminUserCreateRequest;
+use App\Http\Requests\AdminUser\AdminUserEditRequest;
 use App\Models\AdminUser;
 use App\Models\Role;
 use Illuminate\Http\Request;
@@ -73,13 +74,31 @@ class AdminUserController extends Controller
         ]);
     }
 
-    public function update()
+    public function update(AdminUserEditRequest $request, $adminUserId)
     {
         checkPermission('edit adminuser');
+
+        $adminUser = AdminUser::where('id', $adminUserId)->firstOrFail();
+
+        if ($request->has('password')) {
+            $adminUser->update(array_merge($request->all(), [
+                'password' => Hash::make($request->password)
+            ]));
+        } else {
+            $adminUser->update(array_merge($request->all(), [
+                'password' => $adminUser->password
+            ]));
+        }
+
+        return redirect()->back()->with('success', 'Updated AdminUser.');
     }
 
-    public function destroy()
+    public function destroy($adminUserId)
     {
         checkPermission('delete adminuser');
+
+        AdminUser::where('id', $adminUserId)->first()->delete();
+
+        return redirect()->back()->with('success', 'Deleted AdminUser.');
     }
 }

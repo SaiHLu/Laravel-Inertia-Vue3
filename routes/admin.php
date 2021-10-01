@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Backend\AdminUser\AdminUserController;
 use App\Http\Controllers\Backend\Auth\LoginController;
+use App\Http\Controllers\Backend\Blog\BlogController;
 use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\Role\RoleController;
 use App\Http\Controllers\Backend\User\UserController;
@@ -24,5 +25,6 @@ Route::prefix('admin')->name('admin.')->group(function () {
         Route::resource('adminusers', AdminUserController::class)->except(['show']);
         Route::resource('users', UserController::class)->except(['show']);
         Route::resource('roles', RoleController::class)->except(['show']);
+        Route::resource('blogs', BlogController::class)->except('show');
     });
 });

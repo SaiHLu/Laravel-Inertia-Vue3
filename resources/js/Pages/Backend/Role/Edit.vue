@@ -1,5 +1,5 @@
 <template>
-  <Breadcrumb pageName="Create Role" :breadcrumbs="breadcrumbs" />
+  <Breadcrumb pageName="Edit Role" :breadcrumbs="Role.edit" />
 
   <div class="card card-primary">
     <form @submit.prevent="updateRole">
@@ -54,6 +54,8 @@ import AuthLayout from "@/Backend/Layouts/AuthLayout";
 import Breadcrumb from "@/Backend/Components/Breadcrumb";
 import TextInput from "@/Backend/Components/TextInput";
 import Button from "@/Backend/Components/Button";
+import { useBreadcrumbs } from "@/Backend/Composables/useBreadcrumbs.js";
+import { toastMessage } from "@/Backend/Composables/useToastMessage.js";
 
 export default {
   layout: AuthLayout,
@@ -64,54 +66,24 @@ export default {
     status: Object,
   },
   components: { Breadcrumb, TextInput, Button },
-  methods: {
-    updateRole() {
-      this.form.put(route("admin.roles.update", this.role.id), {
-        preserveState: true,
-        onSuccess: () => {
-          this.toastMessage("success", this.status.success, "top-right");
-          this.status.success = null;
-        },
-      });
-    },
-    toastMessage(icon, title, position) {
-      this.$swal.fire({
-        toast: true,
-        icon: icon,
-        title: title,
-        position: position,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        },
-      });
-    },
-  },
   setup(props) {
-    const breadcrumbs = [
-      {
-        link: route("admin.dashboard"),
-        text: "Dashboard",
-      },
-      {
-        link: route("admin.roles.index"),
-        text: "Roles",
-      },
-      {
-        link: null,
-        text: "Create",
-      },
-    ];
+    const { Role } = useBreadcrumbs;
 
     const form = useForm({
       name: props.role.name,
       permissions: props.role_permissions,
     });
 
-    return { form, breadcrumbs };
+    const updateRole = () => {
+      form.put(route("admin.roles.update", props.role.id), {
+        preserveState: true,
+        onSuccess: () => {
+          toastMessage("success", props.status.success, "top-right");
+        },
+      });
+    };
+
+    return { form, Role, updateRole };
   },
 };
 </script>

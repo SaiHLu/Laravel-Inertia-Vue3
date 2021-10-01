@@ -63,6 +63,22 @@ class PermissionSeeder extends Seeder
                 'name' => 'delete user',
                 'guard_name' => 'admin',
             ],
+            [
+                'name' => 'get blog',
+                'guard_name' => 'admin',
+            ],
+            [
+                'name' => 'create blog',
+                'guard_name' => 'admin',
+            ],
+            [
+                'name' => 'edit blog',
+                'guard_name' => 'admin',
+            ],
+            [
+                'name' => 'delete blog',
+                'guard_name' => 'admin',
+            ],
         ];
 
         Permission::insert($permissions);

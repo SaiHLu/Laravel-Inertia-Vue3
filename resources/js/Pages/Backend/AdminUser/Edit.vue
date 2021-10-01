@@ -1,5 +1,5 @@
 <template>
-  <Breadcrumb pageName="Edit AdminUser" :breadcrumbs="breadcrumbs" />
+  <Breadcrumb pageName="Edit AdminUser" :breadcrumbs="AdminUser.edit" />
   <div class="card card-primary">
     <form @submit.prevent="updateAdminUser">
       <div class="card-body">
@@ -60,6 +60,8 @@ import Breadcrumb from "@/Backend/Components/Breadcrumb";
 import TextInput from "@/Backend/Components/TextInput";
 import SelectInput from "@/Backend/Components/SelectInput";
 import Button from "@/Backend/Components/Button";
+import { useBreadcrumbs } from "@/Backend/Composables/useBreadcrumbs.js";
+import { toastMessage } from "@/Backend/Composables/useToastMessage.js";
 
 export default {
   layout: AuthLayout,
@@ -75,47 +77,8 @@ export default {
     Button,
     SelectInput,
   },
-  methods: {
-    updateAdminUser() {
-      this.form.put(route("admin.adminusers.update", this.adminUser.id), {
-        preserveState: false,
-        onSuccess: () => {
-          this.toastMessage("success", this.status.success, "top-right");
-          this.status.success = null;
-        },
-      });
-    },
-    toastMessage(icon, title, position) {
-      this.$swal.fire({
-        toast: true,
-        icon: icon,
-        title: title,
-        position: position,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        },
-      });
-    },
-  },
   setup(props) {
-    const breadcrumbs = [
-      {
-        link: route("admin.dashboard"),
-        text: "Dashboard",
-      },
-      {
-        link: route("admin.adminusers.index"),
-        text: "Admin Users",
-      },
-      {
-        link: null,
-        text: "Edit",
-      },
-    ];
+    const { AdminUser } = useBreadcrumbs;
 
     const form = useForm({
       name: props.adminUser.name,
@@ -125,7 +88,16 @@ export default {
       password_confirmation: null,
     });
 
-    return { breadcrumbs, form };
+    const updateAdminUser = () => {
+      form.put(route("admin.adminusers.update", props.adminUser.id), {
+        preserveState: true,
+        onSuccess: () => {
+          toastMessage("success", props.status.success, "top-right");
+        },
+      });
+    };
+
+    return { AdminUser, form, updateAdminUser };
   },
 };
 </script>

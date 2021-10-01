@@ -1,5 +1,5 @@
 <template>
-  <Breadcrumb pageName="Create User" :breadcrumbs="breadcrumbs" />
+  <Breadcrumb pageName="Create User" :breadcrumbs="User.create" />
   <div class="card card-primary">
     <form @submit.prevent="createUser">
       <div class="card-body">
@@ -53,6 +53,8 @@ import AuthLayout from "@/Backend/Layouts/AuthLayout.vue";
 import Breadcrumb from "@/Backend/Components/Breadcrumb";
 import TextInput from "@/Backend/Components/TextInput";
 import Button from "@/Backend/Components/Button";
+import { useBreadcrumbs } from "@/Backend/Composables/useBreadcrumbs.js";
+import { toastMessage } from "@/Backend/Composables/useToastMessage.js";
 
 export default {
   layout: AuthLayout,
@@ -60,48 +62,8 @@ export default {
     status: Object,
   },
   components: { Breadcrumb, TextInput, Button },
-  methods: {
-    createUser() {
-      this.form.post(route("admin.users.store"), {
-        preserveState: true,
-        onSuccess: () => {
-          this.form.reset();
-          this.toastMessage("success", this.status.success, "top-right");
-          this.status.success = null;
-        },
-      });
-    },
-    toastMessage(icon, title, position) {
-      this.$swal.fire({
-        toast: true,
-        icon: icon,
-        title: title,
-        position: position,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        },
-      });
-    },
-  },
-  setup() {
-    const breadcrumbs = [
-      {
-        link: route("admin.dashboard"),
-        text: "Dashboard",
-      },
-      {
-        link: route("admin.users.index"),
-        text: "Users",
-      },
-      {
-        link: null,
-        text: "Create",
-      },
-    ];
+  setup(props) {
+    const { User } = useBreadcrumbs;
 
     const form = useForm({
       name: null,
@@ -110,7 +72,17 @@ export default {
       password_confirmation: null,
     });
 
-    return { breadcrumbs, form };
+    const createUser = () => {
+      form.post(route("admin.users.store"), {
+        preserveState: true,
+        onSuccess: () => {
+          form.reset();
+          toastMessage("success", props.status.success, "top-right");
+        },
+      });
+    };
+
+    return { User, form, createUser };
   },
 };
 </script>

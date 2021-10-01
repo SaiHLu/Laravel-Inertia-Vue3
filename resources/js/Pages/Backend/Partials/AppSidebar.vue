@@ -62,6 +62,12 @@
               <p>Roles</p>
             </Link>
           </li>
+          <li class="nav-item">
+            <Link :href="route('admin.blogs.index')" class="nav-link">
+              <i class="nav-icon fas fa-blog"></i>
+              <p>Blogs</p>
+            </Link>
+          </li>
         </ul>
       </nav>
       <!-- /.sidebar-menu -->

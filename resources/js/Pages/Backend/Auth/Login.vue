@@ -69,6 +69,7 @@ import GuestLayout from "@/Backend/Layouts/GuestLayout.vue";
 import TextInput from "@/Backend/Components/TextInput";
 import ToggleInput from "@/Backend/Components/ToggleInput";
 import Button from "@/Backend/Components/Button";
+import { toastMessage } from "@/Backend/Composables/useToastMessage.js";
 
 export default {
   layout: GuestLayout,
@@ -76,42 +77,29 @@ export default {
     status: Object,
   },
   components: { TextInput, ToggleInput, Button },
-  methods: {
-    login() {
-      this.form.post(route("admin.login"), {
-        preserveState: true,
-        onFinish: () => {
-          if (this.status.error) {
-            this.toastMessage("error", this.status.error, "top-right");
-            this.status.error = null;
-          }
-        },
-      });
-    },
-    toastMessage(icon, title, position) {
-      this.$swal.fire({
-        toast: true,
-        icon: icon,
-        title: title,
-        position: position,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        },
-      });
-    },
-  },
-  setup() {
+  setup(props) {
     const form = useForm({
       email: null,
       password: null,
       remember_me: false,
     });
 
-    return { form };
+    const login = () => {
+      form.post(route("admin.login"), {
+        preserveState: true,
+        onFinish: () => {
+          if (props.status.error) {
+            toastMessage("error", props.status.error, "top-right");
+            props.status.error = null;
+          }
+        },
+        onSuccess: () => {
+          toastMessage("success", "Succssfully Logged In.", "top-right");
+        },
+      });
+    };
+
+    return { form, login };
   },
 };
 </script>

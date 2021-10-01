@@ -49,7 +49,7 @@ class RoleSeeder extends Seeder
         $i = 1; // roles count
         while ($i <= 2) {
             $j = 1; // permissions count
-            while ($j <= 12) {
+            while ($j <= 16) {
                 $data[] = [
                     'role_id' => $i,
                     'permission_id' => $j,

@@ -1,7 +1,7 @@
 <template>
-  <Breadcrumb pageName="Create User" :breadcrumbs="breadcrumbs" />
+  <Breadcrumb pageName="Create User" :breadcrumbs="User.edit" />
   <div class="card card-primary">
-    <form @submit.prevent="createUser">
+    <form @submit.prevent="updateUser">
       <div class="card-body">
         <TextInput
           type="text"
@@ -53,6 +53,8 @@ import AuthLayout from "@/Backend/Layouts/AuthLayout.vue";
 import Breadcrumb from "@/Backend/Components/Breadcrumb";
 import TextInput from "@/Backend/Components/TextInput";
 import Button from "@/Backend/Components/Button";
+import { useBreadcrumbs } from "@/Backend/Composables/useBreadcrumbs.js";
+import { toastMessage } from "@/Backend/Composables/useToastMessage.js";
 
 export default {
   layout: AuthLayout,
@@ -61,47 +63,8 @@ export default {
     status: Object,
   },
   components: { Breadcrumb, TextInput, Button },
-  methods: {
-    createUser() {
-      this.form.put(route("admin.users.update", this.user.id), {
-        preserveState: true,
-        onSuccess: () => {
-          this.toastMessage("success", this.status.success, "top-right");
-          this.status.success = null;
-        },
-      });
-    },
-    toastMessage(icon, title, position) {
-      this.$swal.fire({
-        toast: true,
-        icon: icon,
-        title: title,
-        position: position,
-        showConfirmButton: false,
-        timer: 3000,
-        timerProgressBar: true,
-        didOpen: (toast) => {
-          toast.addEventListener("mouseenter", this.$swal.stopTimer);
-          toast.addEventListener("mouseleave", this.$swal.resumeTimer);
-        },
-      });
-    },
-  },
   setup(props) {
-    const breadcrumbs = [
-      {
-        link: route("admin.dashboard"),
-        text: "Dashboard",
-      },
-      {
-        link: route("admin.users.index"),
-        text: "Users",
-      },
-      {
-        link: null,
-        text: "Edit",
-      },
-    ];
+    const { User } = useBreadcrumbs;
 
     const form = useForm({
       name: props.user.name,
@@ -110,7 +73,16 @@ export default {
       password_confirmation: null,
     });
 
-    return { breadcrumbs, form };
+    const updateUser = () => {
+      form.put(route("admin.users.update", props.user.id), {
+        preserveState: true,
+        onSuccess: () => {
+          toastMessage("success", props.status.success, "top-right");
+        },
+      });
+    };
+
+    return { User, form, updateUser };
   },
 };
 </script>
