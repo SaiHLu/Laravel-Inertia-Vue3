@@ -11,7 +11,7 @@
     <link rel="stylesheet" href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
 
     <!-- AdminLte Theme -->
-    <link rel="stylesheet" href="{{ asset('css/backend/css/adminlte.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/backend/adminlte.min.css') }}">
     <!-- overlayScrollbars -->
     <link rel="stylesheet" href="{{ asset('plugins/backend/overlayScrollbars/css/OverlayScrollbars.min.css') }}">
     <!-- Google Font: Source Sans Pro -->
@@ -37,7 +37,7 @@
     <!-- overlayScrollbars -->
     <script src="{{ asset('plugins/backend/overlayScrollbars/js/jquery.overlayScrollbars.min.js') }}"></script>
     <!-- AdminLTE App -->
-    <script src="{{ asset('js/backend/js/adminlte.min.js') }}"></script>
+    <script src="{{ asset('js/backend/adminlte.min.js') }}"></script>
     <script src="{{ mix('js/app.js') }}"></script>
 </body>
 

@@ -1,11 +1,8 @@
 <?php
 
+use App\Http\Controllers\Frontend\BlogController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
-
-Route::get('/', function () {
-    return inertia('Frontend/Welcome');
-})->name('frontend.welcome');
 
 Route::get('/about', function () {
     return inertia('Frontend/About');
@@ -13,4 +10,6 @@ Route::get('/about', function () {
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::resource('blogs', BlogController::class)->only('index', 'show');

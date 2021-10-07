@@ -11,7 +11,7 @@ class Blog extends Model  implements HasMedia
 {
     use HasFactory, InteractsWithMedia;
 
-    protected $fillable = ['title'];
+    protected $fillable = ['title', 'description'];
 
     // Scope
     public function scopeFilter($query, array $filters)
